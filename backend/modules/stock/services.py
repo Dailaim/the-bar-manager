@@ -1,25 +1,25 @@
 import uuid
-from database.items import Items, Product, items
-from modules.stock.models import ProductUpdate
+from database.items import Items, Item, items
+from modules.stock.models import ItemUpdate
 
 
-def create_item(name: str, price: int, quantity: int) -> Product:
-    newProduct = Product(
+def create_item(name: str, price: int, quantity: int) -> Item:
+    newItem = Item(
         id=uuid.uuid4().hex,
         name=name,
         price=price,
         quantity=quantity
     )
-    items[newProduct["id"]] = newProduct
-    return newProduct
+    items[newItem["id"]] = newItem
+    return newItem
 
 def get_items() -> Items:
     return items
   
-def get_item(item_id: str) -> Product:
+def get_item(item_id: str) -> Item:
     return items[item_id]
   
-def update_item(item_id: str, update_data: ProductUpdate) -> dict:
+def update_item(item_id: str, update_data: ItemUpdate) -> dict:
     item = items[item_id]
     if update_data.name is not None:
         item["name"] = update_data.name

@@ -1,12 +1,12 @@
 from typing import Dict, TypedDict
 
-class Product(TypedDict):
+class Item(TypedDict):
     id: int
     name: str
     price: int
     quantity: int
 
-Items = Dict[str, Product]
+Items = Dict[str, Item]
 
 items: Items = {
     "1": {
