@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 import uvicorn
-
+from modules.stock.routes import StockRouter
 app = FastAPI(title="The Bar Manager", version="0.1.0")
-
+app.include_router(StockRouter)
 
 @app.get("/health")
 def health_check():
