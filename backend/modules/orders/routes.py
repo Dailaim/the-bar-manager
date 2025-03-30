@@ -16,7 +16,7 @@ def post_orders(order: CreateOrder) -> JSONResponse:
     return response
 
 @OrdersRouter.get("/{order_id}", response_model=OrderResponse)
-def get_order_by_id(order_id: str) -> JSONResponse:
+def get_order(order_id: str) -> JSONResponse:
     response = get_order_by_id(order_id)
     return response
   
