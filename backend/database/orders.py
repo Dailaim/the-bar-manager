@@ -1,6 +1,7 @@
 from typing import List, Dict, Union, TypedDict
 from datetime import datetime
 from constants.taxes import taxes
+
 class OrderItem(TypedDict):
     name: str
     quantity: int
@@ -14,6 +15,7 @@ class OrderRoundItem(TypedDict):
     id: int
 
 class OrderRound(TypedDict):
+    id: str
     created:  datetime
     items: List[OrderRoundItem]
 
@@ -50,6 +52,7 @@ orders: Orders = {
           ], 
         rounds=[
             OrderRound(
+                id="1",
                 created=datetime(2023, 1, 1).timestamp(),
                 items=[
                     OrderRoundItem(
