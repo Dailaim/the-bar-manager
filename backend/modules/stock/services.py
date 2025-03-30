@@ -25,7 +25,7 @@ def get_item(item_id: str) -> Item:
   
 def update_item(item_id: str, update_data: ItemUpdate) -> Item:
     item = get_item(item_id)
-    
+
     if update_data.name is not None:
        item.update(name=update_data.name)
     if update_data.price is not None:
@@ -37,5 +37,6 @@ def update_item(item_id: str, update_data: ItemUpdate) -> Item:
     return item  
   
 def delete_item(item_id: str) -> None:
+    item = get_item(item_id)
     del items[item_id]
-    return None
+    return item

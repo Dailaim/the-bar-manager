@@ -19,3 +19,6 @@ class Beer(BaseModel):
 class StockResponse(BaseModel):
     last_updated: datetime
     beers: List[Beer]
+    
+class StockItemResponse(BaseModel):
+    beer: Beer
