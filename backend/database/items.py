@@ -1,7 +1,7 @@
 from typing import Dict, TypedDict
 
 class Item(TypedDict):
-    id: int
+    id: str
     name: str
     price: int
     quantity: int

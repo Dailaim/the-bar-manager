@@ -7,12 +7,12 @@ class OrderItem(TypedDict):
     quantity: int
     total: float
     price_per_unit: float
-    id: int
+    id: str
     
 class OrderRoundItem(TypedDict):
     name: str
     quantity: int
-    id: int
+    id: str
 
 class OrderRound(TypedDict):
     id: str
@@ -47,7 +47,7 @@ orders: Orders = {
                 quantity=2,
                 total=115 * 2,
                 price_per_unit=115,
-                id=1
+                id="1"
             )
           ], 
         rounds=[
@@ -58,7 +58,7 @@ orders: Orders = {
                     OrderRoundItem(
                         name="Corona",
                         quantity=2,
-                        id=1
+                        id="1"
                     )
                 ]
             )
