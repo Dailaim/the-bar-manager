@@ -23,4 +23,4 @@ class OrdersResponse(BaseModel):
     last_updated: datetime
     
 class OrderResponse(BaseModel):
-    order: Order
+    order: Optional[Order]
