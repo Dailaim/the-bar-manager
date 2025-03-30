@@ -41,7 +41,7 @@ def items_for_rounds(rounds: List[OrderRound]) ->  List[OrderItem]:
             id=item_id
         )
         items_list.append(order_item)
-        
+    
     return items_list
       
 def price_for_items(items: List[OrderItem]) -> PricesOrder:
@@ -125,7 +125,7 @@ def remove_round(order_id: str, round_id: str) -> Order:
         return None
       
     items = items_for_rounds(rounds)
-    prices = price_for_items(order.items)
+    prices = price_for_items(items)
     update_stock(items)
     order.update(rounds=rounds, items=items, subtotal=prices.subtotal, taxes=prices.taxes, total=prices.total)
     orders[order_id] = order
