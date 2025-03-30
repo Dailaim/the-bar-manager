@@ -17,7 +17,7 @@ def get_order_by_id(order_id: str) -> Order:
         raise HTTPException(status_code=404, detail="Order not found")
     return order
   
-def items_for_rounds(rounds: List[OrderRoundItem]) ->  List[OrderItem]:
+def items_for_rounds(rounds: List[OrderRound]) ->  List[OrderItem]:
     items: Items = {}
     for round in rounds:
         for item in round.get("items", []):
@@ -27,6 +27,8 @@ def items_for_rounds(rounds: List[OrderRoundItem]) ->  List[OrderItem]:
                 items[id].update(quantity=items[id]["quantity"] + item["quantity"])
             else:
                 items[id] = itemDatabase
+                items[id]["quantity"] = item["quantity"]
+                
     items_list = []
     for item_id in items:
         item = items[item_id]
@@ -91,6 +93,8 @@ def delete_order(order_id: str) -> None:
     return None
   
 def add_round(order_id: str, round: CreateRound) -> Order:
+    if len(round.items) == 0:
+        raise HTTPException(status_code=400, detail="Round cannot be empty")
     order = get_order_by_id(order_id)
     rounds = order.get("rounds", [])
     round_id = str(uuid.uuid4())
@@ -104,12 +108,19 @@ def add_round(order_id: str, round: CreateRound) -> Order:
 def remove_round(order_id: str, round_id: str) -> Order:
     order = get_order_by_id(order_id)
     rounds = order.get("rounds", [])
+    round : OrderRound = None
     for i, r in  enumerate(rounds):
-        if r.id == round_id:
+        if str(r["id"]) == str(round_id):
             rounds.pop(i)
+            round = r
             break
-    if round is not None:
-        raise Exception("Round not found")
+      
+    if round is None:
+        raise HTTPException(status_code=404, detail="Round not found")
+    
+    if len(rounds) == 0:
+        del orders[order_id]
+        return None
       
     items = items_for_rounds(rounds)
     prices = price_for_items(order.items)
@@ -118,18 +129,25 @@ def remove_round(order_id: str, round_id: str) -> Order:
     return order
 
 
-def update_round(order_id: str, round_id: str, round: OrderRound) -> Order:
+def update_round(order_id: str, round_id: str, round: CreateRound) -> Order:
+    if len(round.items) == 0:
+        raise HTTPException(status_code=400, detail="Round cannot be empty")
+    
     order = get_order_by_id(order_id)
     rounds = order.get("rounds", [])
+    _round: OrderRound = None
     for i, r in  enumerate(rounds):
-        if r.id == round_id:
-            rounds[i] = round
+        if str(r["id"]) == str(round_id):
+            rounds[i]["items"] = round.items
+            _round = r
             break
-    if round is not None:
-        raise Exception("Round not found")
-      
+          
+    if _round is None:
+        raise HTTPException(status_code=404, detail="Round not found")
+    
     items = items_for_rounds(rounds)
     prices = price_for_items(items)
+
     order.update(rounds=rounds, items=items, subtotal=prices.subtotal, taxes=prices.taxes, total=prices.total)
     
     orders[order_id] = order
