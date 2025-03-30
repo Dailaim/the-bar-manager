@@ -14,23 +14,24 @@ def create_item(name: str, price: int, quantity: int) -> Item:
     return newItem
 
 def get_items() -> Items:
-    return items
+    return items.copy()
   
 def get_item(item_id: str) -> Item:
     item = items.get(str(item_id))
     if item is None:
         raise HTTPException(status_code=404, detail="Item not found")
     
-    return item
+    return item.copy()
   
-def update_item(item_id: str, update_data: ItemUpdate) -> dict:
-    item = items[item_id]
+def update_item(item_id: str, update_data: ItemUpdate) -> Item:
+    item = get_item(item_id)
+    
     if update_data.name is not None:
-        item["name"] = update_data.name
+       item.update(name=update_data.name)
     if update_data.price is not None:
-        item["price"] = update_data.price
+       item.update(price=update_data.price)
     if update_data.quantity is not None:
-        item["quantity"] = update_data.quantity
+       item.update(quantity=update_data.quantity)
 
     return item  
   
