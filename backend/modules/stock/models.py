@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import List
 
 
-class ProductUpdate(BaseModel):
+class ItemUpdate(BaseModel):
     name: Optional[str] = None
     price: Optional[int] = None
     quantity: Optional[int] = None
