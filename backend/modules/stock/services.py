@@ -1,7 +1,7 @@
 import uuid
 from database.items import Items, Item, items
 from modules.stock.models import ItemUpdate
-
+from fastapi import HTTPException
 
 def create_item(name: str, price: int, quantity: int) -> Item:
     newItem = Item(
@@ -17,7 +17,11 @@ def get_items() -> Items:
     return items
   
 def get_item(item_id: str) -> Item:
-    return items[item_id]
+    item = items.get(str(item_id))
+    if item is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+    
+    return item
   
 def update_item(item_id: str, update_data: ItemUpdate) -> dict:
     item = items[item_id]
