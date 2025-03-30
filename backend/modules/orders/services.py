@@ -12,7 +12,7 @@ def get_orders() -> Orders:
     return orders.copy()
 
 def get_order_by_id(order_id: str) -> Order:
-    order = orders.get(order_id).copy()
+    order = orders.get(order_id)
     if order is None:
         raise HTTPException(status_code=404, detail="Order not found")
     return order
@@ -20,30 +20,31 @@ def get_order_by_id(order_id: str) -> Order:
 def items_for_rounds(rounds: List[OrderRoundItem]) ->  List[OrderItem]:
     items: Items = {}
     for round in rounds:
-        for item in round.items:
-            if item.id in items:
-                items[item.id]["quantity"] += item.quantity
+        for item in round.get("items", []):
+            id = item.get("id", None)
+            itemDatabase = get_item(id)
+            if id in items:
+                items[id].update(quantity=items[id]["quantity"] + item["quantity"])
             else:
-                items[item.id] = item
+                items[id] = itemDatabase
     items_list = []
-    
     for item_id in items:
         item = items[item_id]
         order_item = OrderItem(
-            name=item["name"],
+            name= item["name"],
             quantity=item["quantity"],
             total=item["price"] * item["quantity"],
             price_per_unit=item["price"],
             id=item_id
         )
         items_list.append(order_item)
-
-    return items
+        
+    return items_list
       
 def price_for_items(items: List[OrderItem]) -> PricesOrder:
     subtotal = 0
     for item in items:
-        subtotal += item.total
+        subtotal += item["price_per_unit"] * item["quantity"]
     taxes_total = subtotal * taxes / 100
     total = subtotal + taxes_total
     
@@ -56,19 +57,18 @@ def price_for_items(items: List[OrderItem]) -> PricesOrder:
 
 def create_order(order: CreateOrder) -> Orders:
     order_id = str(uuid.uuid4())
-    items = items_for_rounds(order.rounds)
 
     rounds: List[OrderRound] = []
+
+    rounds.append(
+      OrderRound(
+        created=datetime.now(),
+        id=str(uuid.uuid4()),
+        items=order.round
+      )
+    )
     
-    for itemsRound in order.round:
-        round_id = str(uuid.uuid4())
-        rounds.append(
-            OrderRound(
-                created=datetime.now(),
-                id=round_id,
-                items=itemsRound
-            )
-        )
+    items = items_for_rounds(rounds)
         
     prices = price_for_items(items)
         
@@ -95,12 +95,9 @@ def add_round(order_id: str, round: CreateRound) -> Order:
     rounds = order.get("rounds", [])
     round_id = str(uuid.uuid4())
     rounds.append(OrderRound(id=round_id, items=round.items, created=datetime.now()))
-    order.update(rounds=rounds)
-    order.items = items_for_rounds(order.rounds)
-    prices = price_for_items(order.items)
-    order.subtotal = prices.subtotal
-    order.taxes = prices.taxes
-    order.total = prices.total
+    items = items_for_rounds(rounds)
+    prices = price_for_items(items)
+    order.update(subtotal=prices.subtotal, taxes=prices.taxes, total=prices.total, rounds=rounds, items=items)
     orders[order_id] = order
     return order
   
@@ -112,15 +109,11 @@ def remove_round(order_id: str, round_id: str) -> Order:
             rounds.pop(i)
             break
     if round is not None:
-        # throw error if round is not found
         raise Exception("Round not found")
-    order.update(rounds=rounds)
-    
-    order.items = items_for_rounds(order.rounds)
+      
+    items = items_for_rounds(rounds)
     prices = price_for_items(order.items)
-    order.subtotal = prices.subtotal
-    order.taxes = prices.taxes
-    order.total = prices.total
+    order.update(rounds=rounds, items=items, subtotal=prices.subtotal, taxes=prices.taxes, total=prices.total)
     orders[order_id] = order
     return order
 
@@ -133,13 +126,11 @@ def update_round(order_id: str, round_id: str, round: OrderRound) -> Order:
             rounds[i] = round
             break
     if round is not None:
-        # throw error if round is not found
         raise Exception("Round not found")
-    order.update(rounds=rounds)
-    order.items = items_for_rounds(order.rounds)
-    prices = price_for_items(order.items)
-    order.subtotal = prices.subtotal
-    order.taxes = prices.taxes
-    order.total = prices.total
+      
+    items = items_for_rounds(rounds)
+    prices = price_for_items(items)
+    order.update(rounds=rounds, items=items, subtotal=prices.subtotal, taxes=prices.taxes, total=prices.total)
+    
     orders[order_id] = order
     return order
