@@ -152,3 +152,9 @@ def update_round(order_id: str, round_id: str, round: CreateRound) -> Order:
     
     orders[order_id] = order
     return order
+  
+def pay_order(order_id: str) -> Order:
+    order = get_order_by_id(order_id)
+    order.update(paid=True)
+    orders[order_id] = order
+    return order

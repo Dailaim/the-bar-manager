@@ -6,6 +6,7 @@ from modules.orders.services import (
     remove_round as delete_round,
     update_round as modify_round,
     delete_order as erase_order,
+    pay_order as pay_final_order,
 )
 from modules.orders.models import OrdersResponse, OrderResponse, CreateRound, CreateOrder
 from datetime import datetime
@@ -54,6 +55,12 @@ def remove_round(order_id: str, round_id: str) -> OrderResponse:
 
 def update_round(order_id: str, round_id: str, round: CreateRound) -> OrderResponse:
     order = modify_round(order_id, round_id, round)  
+    order_response = OrderResponse(order=order)
+    
+    return order_response
+
+def pay_order(order_id: str) -> OrderResponse:
+    order = pay_final_order(order_id)  
     order_response = OrderResponse(order=order)
     
     return order_response
