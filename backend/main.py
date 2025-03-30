@@ -3,8 +3,17 @@ import uvicorn
 from modules.stock.routes import StockRouter
 from modules.orders.routes import OrdersRouter
 from scalar_fastapi import get_scalar_api_reference
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="The Bar Manager", version="0.1.0")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(StockRouter)
 app.include_router(OrdersRouter)
 
