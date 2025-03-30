@@ -33,6 +33,7 @@ def update_item(item_id: str, update_data: ItemUpdate) -> Item:
     if update_data.quantity is not None:
        item.update(quantity=update_data.quantity)
 
+    items[item_id] = item
     return item  
   
 def delete_item(item_id: str) -> None:
