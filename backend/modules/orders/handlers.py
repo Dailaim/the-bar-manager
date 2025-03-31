@@ -4,6 +4,7 @@ from modules.orders.services import (
     create_order as create_new_order,
     add_round as append_round,
     remove_round as delete_round,
+    remove_round as delete_round,
     update_round as modify_round,
     delete_order as erase_order,
     pay_order as pay_final_order,
@@ -46,6 +47,13 @@ def add_round(order_id: str, round: CreateRound) -> OrderResponse:
     order_response = OrderResponse(order=order)
     
     return order_response
+
+def delete_round(order_id: str, round_id: str) -> OrderResponse:
+    order = remove_round(order_id, round_id)
+    order_response = OrderResponse(order=order)
+    
+    return order_response
+    
 
 def remove_round(order_id: str, round_id: str) -> OrderResponse:
     order = delete_round(order_id, round_id)  

@@ -165,6 +165,12 @@ def pay_order(order_id: str) -> Order:
     orders[order_id] = order
     return order
   
+def delete_order(order_id: str) -> None:
+    order = get_order_by_id(order_id)
+    update_stock(order.get("items", []), is_reverse=True)
+    del orders[order_id]
+    return None
+  
 def update_stock(items: List[OrderItem], is_reverse: bool = False) -> None:
     for item in items:
         if item["quantity"] <= 0:

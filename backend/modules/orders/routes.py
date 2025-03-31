@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
-from modules.orders.handlers import get_all_orders, get_order_by_id, post_order, add_round, remove_round, update_round, delete_order, pay_order
+from modules.orders.handlers import get_all_orders, get_order_by_id, post_order, add_round, remove_round, update_round, delete_order, pay_order, delete_round
 from modules.orders.models import OrdersResponse, OrderResponse, CreateRound, CreateOrder
 
 OrdersRouter = APIRouter(prefix="/orders")
@@ -25,6 +25,11 @@ def get_orders_by_id(order_id: str) -> JSONResponse:
     response = get_order_by_id(order_id)
     return response
   
+@OrdersRouter.delete("/{order_id}", response_model=OrderResponse)
+def delete_orders_by_id(order_id: str) -> JSONResponse:
+    response = delete_order(order_id)
+    return response
+  
 @OrdersRouter.put("/{order_id}/pay", response_model=OrderResponse)
 def pay_order(order_id: str) -> JSONResponse:
     response = pay_order(order_id)
@@ -36,7 +41,7 @@ def post_rounds(order_id: str, _round: CreateRound) -> JSONResponse:
     return response
   
 @OrdersRouter.delete("/{order_id}/rounds/{round_id}", response_model=OrderResponse)
-def delete_rounds(order_id: str, round_id: str) -> JSONResponse:
+def delete_rounds_(order_id: str, round_id: str) -> JSONResponse:
     response = remove_round(order_id, round_id)
     return response
   
