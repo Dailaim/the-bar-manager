@@ -11,8 +11,8 @@ def get_stock() -> JSONResponse:
     return response
   
 @StockRouter.post("", response_model=StockItemResponse)
-def post_stock_(item: CreateItem):
-    response = handlers.post_stock(item.name, item.price, item.quantity)
+def post_stock(item: CreateItem):
+    response = handlers.post_stock(item)
     return response
   
 @StockRouter.get("/{item_id}", response_model=StockItemResponse)
