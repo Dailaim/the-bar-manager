@@ -1,9 +1,9 @@
-from modules.stock.services import get_items, create_item, get_item, update_item, delete_item
+from modules.stock import services
 from modules.stock.models import StockResponse, StockItemResponse, ItemUpdate, CreateItem
 from datetime import datetime 
 
 def get_all_stock() -> StockResponse:
-  items = get_items()
+  items = services.get_items()
   items_list = list(items.values())
   
   stock_response = StockResponse(
@@ -14,26 +14,26 @@ def get_all_stock() -> StockResponse:
   return stock_response
 
 def post_stock(create_data: CreateItem) -> StockItemResponse:
-    item = create_item(create_data.name, create_data.price, create_data.quantity)
+    item = services.create_item(create_data.name, create_data.price, create_data.quantity)
     item_response = StockItemResponse(beer=item)
     
     return item_response
   
 def get_stock_by_id(item_id: str) -> StockItemResponse:
-    item = get_item(item_id)
+    item = services.get_item(item_id)
     item_response = StockItemResponse(beer=item)
     
     return item_response
   
 def update_stock(item_id: str, update_data: ItemUpdate) -> StockItemResponse:
 
-    item = update_item(item_id, update_data)
+    item = services.update_item(item_id, update_data)
     item_response = StockItemResponse(beer=item)
     
     return item_response
   
 def delete_stock(item_id: str) -> StockItemResponse:
-    item = delete_item(item_id)
+    item = services.delete_item(item_id)
     item_response = StockItemResponse(beer=item)
     
     return item_response
