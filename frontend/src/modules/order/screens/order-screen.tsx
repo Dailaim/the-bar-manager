@@ -239,6 +239,7 @@ export function OrderScreen({ orderId }: OrderScreenProps) {
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   {order.rounds.map((round) => (
                     <RoundComponent
+                      key={round.id}
                       isPaid={order.paid}
                       round={round}
                       onEditRound={openEditRoundModal}
