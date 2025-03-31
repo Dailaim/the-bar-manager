@@ -9,6 +9,10 @@ class ItemUpdate(BaseModel):
     price: Optional[int] = None
     quantity: Optional[int] = None
 
+class CreateItem(BaseModel):
+    name: str
+    price: int
+    quantity: int
 
 class Beer(BaseModel):
     name: str
