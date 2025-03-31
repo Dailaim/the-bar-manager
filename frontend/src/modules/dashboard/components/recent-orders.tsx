@@ -81,6 +81,7 @@ export const RecentOrders = ({ orders, onDeleteOrder }: RecentOrdersProps) => {
                     <Link
                       href={`/orders/${order.id}`}
                       className="text-blue-500 hover:text-blue-700 mr-3"
+                      aria-label="Editar"
                     >
                       {!order.paid ? (
                         <Edit className="h-4 w-4 inline" />
@@ -90,6 +91,7 @@ export const RecentOrders = ({ orders, onDeleteOrder }: RecentOrdersProps) => {
                     </Link>
                     {!order.paid && (
                       <button
+                        aria-label="Eliminar"
                         onClick={() => onDeleteOrder(order.id)}
                         className="text-red-500 hover:text-red-700"
                       >
