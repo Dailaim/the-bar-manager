@@ -1,5 +1,10 @@
 import { OrderScreen } from "@/modules/order/screens/order-screen";
 
-export default function EditOrderPage({ params }: { params: { id: string } }) {
-  return <OrderScreen orderId={params.id} />;
+export default async function EditOrderPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  return <OrderScreen orderId={id} />;
 }
